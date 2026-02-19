@@ -1,1 +1,6 @@
-
+select mc.name as Category,round(avg(t.amount),2) as AverageAmount , 
+case when hour(t.date)<12 then 1 else 0 end as EarlyTransaction
+from Transaction t join Merchant m on 
+t.id_merchant=m.id join Merchant_category mc on m.id_merchant_category=mc.id
+ group by mc.name,EarlyTransaction
+ order by mc.name,EarlyTransaction desc

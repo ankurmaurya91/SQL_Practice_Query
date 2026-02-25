@@ -1,0 +1,51 @@
+You are given a Customers table which contains customers and their corresponding details. However, there is a column called ContactName which you feel needs to be segregated into two columns First_name and Last_name for a better understanding of the data.
+
+
+
+Write a query that helps you to create separate columns according to the specified names and split the ContactName column into First_name and Last_name. Further, delete the original column and return the resulting table which only contains the First_name and the Last_name column.
+
+
+
+Steps:
+
+Create a column after ContactName and name it as First_name.
+Create another column after First_name and name it as Last_name.
+Update these columns with the split values.
+Delete the ContactName column and return the table which only consists of the First_name and the Last_name.
+Input:
+
+Table Name: Customers
+
+CustomerID: A unique identifier assigned to each customer, used to distinguish between different customers.
+CustomerName: The full name of the customer, which may include the first and last name.
+ContactName: The name of the primary contact person associated with the customer.
+Address: The street address of the customer, including any apartment or suite numbers.
+City: The city where the customer is located.
+PostalCode: The postal code or ZIP code of the customer's address.
+Country: The country where the customer resides or where the business is located.
+
+
+NOTE: If any ContactName does not contain a last name, the lastname should be the same as the firstname.
+
+<<<<<<<<<<<<<<<<<<==================ANSWER==================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Main Concept :--
+
+How to splite Column :   1--> SubString_index(ColumnName,' ', 1) ==> Find all text before the first Space
+                         2--> SubString_Index(Substring_Index(ColumnName,' ', 2),' ' ,-1) ==> it will give the All text After 2nd Space
+
+
+Query Answer :--
+------------
+Alter table Customers ADD First_name varchar(50),
+ADD Last_name varchar(50);
+
+update Customers set First_name=substring_index(ContactName,' ',1),
+                     Last_name=substring_index(substring_index(ContactName,' ',2),' ',-1);
+
+update Customers set Last_name=First_name where Last_name='';  
+Alter table Customers drop column ContactName;
+select First_name AS First_Name, Last_name as Last_Name from Customers;
+
+
+

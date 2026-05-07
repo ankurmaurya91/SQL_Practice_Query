@@ -70,3 +70,12 @@ Here The Important point is that find the Cumulative Sales
 {{ round(sum(sum(od.Quantity*p.price)) 
 over(partition by s.ShipperID order by OrderDate),2) as cumulative_Sales }}
 
+<<<<<<<<<<<<<<<<=============Second method =========>>>>>>>>>>>>>>
+
+with cte as (select s.ShipperID,s.shipperName,o.orderDate,round(sum(p.price*od.quantity),2) as total_sales
+ from Products p join Order_Details od on p.productID=od.productID
+join Orders o on od.OrderID=o.OrderID join Shippers s on o.ShipperID=s.ShipperID
+group by s.ShipperID,s.shipperName,o.OrderDate)
+select *, 
+round(sum(total_sales) over(partition by ShipperID,shipperName order by orderDate),2) as cumulative_sales
+ from cte

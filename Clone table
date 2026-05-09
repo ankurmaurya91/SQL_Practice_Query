@@ -1,0 +1,16 @@
+Problem statement
+
+Make a Clone of the product table(without data) and name it to be cloneListPro, and print the table schema of the table cloneListPro in the alphabetical order of column names.
+
+Information about the tables:
+Given below is a database of a newly established e-commerce website. The database contains multiple tables i.e. products, orders, transactions, and customers. The information about required tables is given below
+
+Table product:
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<,========================Query==========================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+create table cloneListPro like product;
+
+select column_name, data_type from information_schema.columns where table_name='cloneListPro'
+order by column_name asc

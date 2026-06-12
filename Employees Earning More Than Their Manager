@@ -22,3 +22,20 @@ Given the Employee table, write a SQL query that finds out employees who earn mo
 ========================== MY Query =========================>>>>>
 
 select e2.name as Employee from Employee e1 join Employee e2 on  e1.id=e2.managerId where e2.salary>e1.salary;
+
+Explanation :-
+Step 1:
+Perform a self-join on the Employee table.
+
+e1 represents the manager.
+e2 represents the employee.
+The join condition matches each employee with their manager using 
+e1.id=e2.managerId
+
+Step 2:
+Compare the employee's salary with their manager's salary.
+where e2.salary>e1.salary
+Step 3:
+Return the employee's name.
+select e2.name as Employee 
+

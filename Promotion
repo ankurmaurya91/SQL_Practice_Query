@@ -1,0 +1,34 @@
+Problem statement
+You have been provided with the employees' database. In this database, there are two tables, namely employees and titles.
+
+The sample for the employees' table is:
+
+
+The sample for the titles table is:
+
+
+Using the employees' database, you need to find all the employees hired after 1990 who have had more than two promotions. You need to show the results in the increasing order of employee number.
+
+Expected Output Sample
+
+<<<<<<<<<<<<<<<====================MY Query ===================>>>>>>>>>>>>>
+with cte as ( select emp_no from employees  where extract(year from hire_date)>1990),
+cte2 as(select emp_no,count(*) as pro from titles group by emp_no having count(*)>2)
+select c1.emp_no,c2.pro as "Amount of Titles"  from cte c1 join cte2 c2 on c1.emp_no=c2.emp_no
+
+Explanation :-
+
+Step 1-
+We identify the Employee who  hired after 1990
+The first CTE retrieves the employee numbers of all employees whose hire year is greater than 1990.
+====>>>  select emp_no from employees  where extract(year from hire_date)>1990  <<<<======
+
+Step 2-
+Find employees who received more than 2 titles
+The second CTE groups records from the titles table by employee number and counts the number of title records for each employee.
+====>>>> select emp_no,count(*) as pro from titles group by emp_no having count(*)>2 <<<====
+Step -3
+Join both CTEs
+The final query joins both CTEs using emp_no.
+=====>>>>>
+select c1.emp_no,c2.pro as "Amount of Titles"  from cte c1 join cte2 c2 on c1.emp_no=c2.emp_no   <<<<<=====

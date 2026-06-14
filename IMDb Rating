@@ -1,0 +1,13 @@
+Problem statement
+Retrieve the title and rating of movies from the IMDb dataset that were released in 2014,
+belong to a genre starting with 'C', and had a budget exceeding 4 Crore.
+
+select i.title,i.rating from IMDB  i join Genre g on i.movie_id=g.movie_id where
+i.title like '%2014%' and g.genre like 'C%' and i.budget>40000000 ;
+
+
+Explanation :-
+
+Step 1: Join the IMDB and Genre Tables
+
+The IMDB table contains movie information such as title, rating, and budget, while the Genre table contains genre information for each movie.

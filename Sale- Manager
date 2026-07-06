@@ -1,0 +1,69 @@
+Problem statement
+Now your manager wants you to remove 2020 from the total sales and profit and present the result. Write a query to get the sum of sales of each segment and their respective segment manager for all years except 2020.
+
+Refer table- orders
+Order_ID(VARCHAR) - Primary Key for each order placed
+Order_Date(VARCHAR) - when was the order placed
+Ship_Date(VARCHAR) - when was the order shipped
+Customer_ID(VARCHAR) -ID of the customer who placed the order
+Segment(VARCHAR) - to which segment does the product sold belongs to
+State(VARCHAR) - State where the order was placed
+City(VARCHAR) - City where the order was placed
+Product_ID(VARCHAR) - ID of the product sold
+Category(VARCHAR) - Category of the product Sold
+SubCategory(VARCHAR) - Sub category of the product Sold
+Product_Name(VARCHAR) - Name of the product sold
+Sales(DOUBLE) -Sale price of the order
+Quantity(DOUBLE) - Quantity of product for which order was placed
+Discount(DOUBLE) - % Discount offered on the MRP
+Profit(DOUBLE) - Total Profit made on the order
+
+Refer table- manager
+Segment(VARCHAR)- to which segment does the product sold belongs to
+Segment_Manager(VARCHAR)- Manager of the respective segment
+Expected Output
++--------------------+-----------------+
+| sum(orders.sales)  | Segment_manager |
++--------------------+-----------------+
+|  728733.1449999991 | Gaganjit Singh  |
+| 277010.88029999984 | Kush Arora      |
+| 408922.81760000007 | Aman Jain       |
++--------------------+-----------------+
+
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<== MY QUERY====>>>>>>>>>
+
+select sum(orders.sales),m.Segment_manager from orders join manager m on orders.Segment=m.Segment 
+where order_Date not like  '%20' group by orders.Segment;
+
+Approach
+
+The query calculates the total sales for each Segment Manager by joining the Orders and Manager tables.
+It excludes orders whose order_Date ends with '20'.
+
+Explanation :-
+
+1. Join the Tables
+FROM Orders o
+JOIN Manager m
+ON o.Segment = m.Segment
+
+The JOIN matches each order with its corresponding segment manager using the Segment column.
+
+2. Filter the Records
+WHERE o.order_Date NOT LIKE '%20'
+
+This condition removes all rows where the order_Date value ends with '20'.
+
+3. Calculate Total Sales
+SUM(o.sales)
+
+The SUM() aggregate function adds the sales values for each segment.
+
+4. Group the Results
+GROUP BY o.Segment, m.Segment_manager
+
+GROUP BY creates one group for each segment (and its manager), allowing SUM() to calculate the total sales for each group.
+
+

@@ -1,0 +1,111 @@
+Table: LogInfo
+
++-------------+----------+
+| Column Name | Type     |
++-------------+----------+
+| account_id  | int      |
+| ip_address  | int      |
+| login       | datetime |
+| logout      | datetime |
++-------------+----------+
+There is no primary key for this table, and it may contain duplicates.
+The table contains information about the login and logout dates of Leetflex accounts. It also contains the IP address from which the account logged in and out.
+It is guaranteed that the logout time is after the login time.
+
+
+Write an SQL query to find the account_id of the accounts that should be banned from Leetflex. An account should be banned if it was logged in at some moment from two different IP addresses.
+
+Return the result table in any order.
+
+The query result format is in the following example:
+
+
+
+LogInfo table:
++------------+------------+---------------------+---------------------+
+| account_id | ip_address | login               | logout              |
++------------+------------+---------------------+---------------------+
+| 1          | 1          | 2021-02-01 09:00:00 | 2021-02-01 09:30:00 |
+| 1          | 2          | 2021-02-01 08:00:00 | 2021-02-01 11:30:00 |
+| 2          | 6          | 2021-02-01 20:30:00 | 2021-02-01 22:00:00 |
+| 2          | 7          | 2021-02-02 20:30:00 | 2021-02-02 22:00:00 |
+| 3          | 9          | 2021-02-01 16:00:00 | 2021-02-01 16:59:59 |
+| 3          | 13         | 2021-02-01 17:00:00 | 2021-02-01 17:59:59 |
+| 4          | 10         | 2021-02-01 16:00:00 | 2021-02-01 17:00:00 |
+| 4          | 11         | 2021-02-01 17:00:00 | 2021-02-01 17:59:59 |
++------------+------------+---------------------+---------------------+
+
+Result table:
++------------+
+| account_id |
++------------+
+| 1          |
+| 4          |
++------------+
+Account ID 1 --> The account was active from "2021-02-01 09:00:00" to "2021-02-01 09:30:00" with two different IP addresses (1 and 2). It should be banned.
+Account ID 2 --> The account was active from two different addresses (6, 7) but in two different times.
+Account ID 3 --> The account was active from two different addresses (9, 13) on the same day but they do not intersect at any moment.
+Account ID 4 --> The account was active from "2021-02-01 17:00:00" to "2021-02-01 17:00:00" with two different IP addresses (10 and 11). It should be banned.
+
+
+
+<<<<<<<<<<<<<<<<<==== MY QUERY================>
+Approach
+
+The idea is to compare each login session with every other login session of the same account. If an account is logged in from two different IP addresses at the same time, then that account should be banned.
+
+To achieve this, we use a Self Join on the LogInfo table.
+
+select distinct l1.account_id from LogInfo l1 join LogInfo l2 on l1.account_id=l2.account_id
+and l1.ip_address!= l2.ip_address and l1.login<=l2.logout
+and l1.logout>=l2.login
+
+Explanation
+1. Self Join
+FROM LogInfo l1
+JOIN LogInfo l2
+
+A self join allows us to compare rows within the same table.
+
+l1 represents the first login session.
+l2 represents the second login session.
+2. Compare the Same Account
+l1.account_id = l2.account_id
+
+This ensures that only login sessions belonging to the same account are compared.
+
+3. Different IP Addresses
+l1.ip_address <> l2.ip_address
+
+The account should only be banned if it is logged in from different IP addresses. Sessions from the same IP are ignored.
+
+4. Check for Overlapping Login Sessions
+l1.login <= l2.logout
+AND l1.logout >= l2.login
+
+These conditions check whether the two login sessions overlap.
+
+Two time intervals overlap if:
+
+Start1 <= End2
+AND
+End1 >= Start2
+
+For example:
+
+Session 1 : 09:00 -------- 09:30
+Session 2 : 08:00 ------------------ 11:30
+
+The sessions overlap between 09:00 and 09:30, so the account should be banned.
+
+Another example:
+
+Session 1 : 16:00 -------- 17:00
+Session 2 :                17:00 -------- 17:59
+
+Both sessions are active at 17:00, which is considered an overlap because the query uses <= and >=.
+
+5. Remove Duplicate Accounts
+SELECT DISTINCT l1.account_id
+
+A self join may produce multiple matching rows for the same account. DISTINCT ensures that each banned account appears only once in the final result.

@@ -1,0 +1,77 @@
+Problem statement
+Table: Logs
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+id is the primary key for this table.
+
+Write an SQL query to find all numbers that appear at least three times consecutively.
+
+Return the result table in any order.
+
+The query result format is in the following example:
+
+
+
+ Logs table:
++----+-----+
+| Id | Num |
++----+-----+
+| 1  | 1   |
+| 2  | 1   |
+| 3  | 1   |
+| 4  | 2   |
+| 5  | 1   |
+| 6  | 2   |
+| 7  | 2   |
++----+-----+
+
+ Result table:
++-----------------+
+| ConsecutiveNums |
++-----------------+
+| 1               |
++-----------------+
+  1 is the only number that appears consecutively for at least three times.
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<========== SQL Query===========>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+select distinct l1.num as ConsecutiveNums from Logs l1 join logs l2  on l2.id=l1.id+1 
+join logs l3 on l3.id=l2.num+1 where l1.num=l2.num and l2.num=l3.num;
+
+Explanation
+
+This solution uses a self-join to compare three consecutive rows from the same Logs table.
+The table is referenced three times using aliases:
+
+l1 → Current row
+l2 → Next consecutive row
+l3 → Third consecutive row
+
+Step 1: Find Consecutive Rows
+ON l2.id = l1.id + 1
+
+This ensures that l2 is immediately after l1.
+
+ON l3.id = l2.id + 1
+This ensures that l3 is immediately after l2.
+Therefore, the query compares three consecutive rows.
+
+Step 2: Check Whether the Numbers Are Equal
+WHERE l1.num = l2.num
+  AND l2.num = l3.num
+
+This condition ensures that all three consecutive rows contain the same number.
+
+Step 3: Remove Duplicate Results
+SELECT DISTINCT l1.num
+
+DISTINCT is used because a number may appear more than three times consecutively.
+
+For example:
+
+1, 1, 1, 1

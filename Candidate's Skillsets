@@ -1,0 +1,59 @@
+Problem statement
+Given a table of candidates and their skills, you're tasked with finding the candidates best suited for an open Data Science job. You want to find candidates who are proficient in Python, Tableau, and Postgre SQL.
+
+Write a query to list the candidates who possess all of the required skills for the job. Sort the output by candidate ID in ascending order.
+
+Input:
+
+Table Name: Candidates
++--------------+-------------+
+| candidate_id | skill       |
++--------------+-------------+
+|          123 | Python      |
+|          123 | Tableau     |
+|          123 | Postgre SQL |
+|          234 | R           |
+|          234 | Power BI    |
+|          234 | SQL Server  |
+|          345 | Python      |
+|          345 | Tableau     |
++--------------+-------------+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<======== SQL Query ===================>>>>>>>>>>>>>>
+Method :-1
+
+with cte as (select candidate_id from Candidates where skill ='Python'),
+cte2 as (select candidate_id from Candidates where  skill ='Tableau'),
+cte3 as ( select candidate_id from Candidates where skill='Postgre SQL')
+select c.candidate_id from cte c join cte2 c2 on c.candidate_id=c2.candidate_id
+join cte3 c3 on c.candidate_id=c3.candidate_id;
+
+Method 2:-
+
+SELECT candidate_id FROM Candidates WHERE skill IN ('Python', 'Tableau', 'Postgre SQL') 
+GROUP BY candidate_id HAVING COUNT(DISTINCT skill) = 3 
+ORDER BY candidate_id ASC;
+
+Approach
+
+The solution divides candidates into three separate groups based on the required skills and then finds the candidates common to all three groups.
+
+Step 1: Find Candidates with Python
+SELECT candidate_id
+FROM Candidates
+WHERE skill = 'Python';
+
+This returns candidates who possess Python.
+Step 2: Find Candidates with Tableau
+SELECT candidate_id
+FROM Candidates
+WHERE skill = 'Tableau';
+
+Step 3: Find Candidates with Postgre SQL
+SELECT candidate_id
+FROM Candidates
+WHERE skill = 'Postgre SQL';
+
+Step 4: Join All Three Skill Groups
+Because INNER JOIN only keeps matching candidate IDs, a candidate must exist in:
+

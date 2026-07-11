@@ -1,0 +1,79 @@
+Problem statement
+Table: UserActivity
+
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| username      | varchar |
+| activity      | varchar |
+| startDate     | Date    |
+| endDate       | Date    |
++---------------+---------+
+This table does not contain primary key.
+This table contain information about the activity performed of each user in a period of time.
+A person with username performed a activity from startDate to endDate.
+
+Write an SQL query to show the second most recent activity of each user.
+
+If the user only has one activity, return that one. 
+
+A user can't perform more than one activity at the same time. Return the result table in any order.
+
+The query result format is in the following example:
+
+UserActivity table:
++------------+--------------+-------------+-------------+
+| username   | activity     | startDate   | endDate     |
++------------+--------------+-------------+-------------+
+| Alice      | Travel       | 2020-02-12  | 2020-02-20  |
+| Alice      | Dancing      | 2020-02-21  | 2020-02-23  |
+| Alice      | Travel       | 2020-02-24  | 2020-02-28  |
+| Bob        | Travel       | 2020-02-11  | 2020-02-18  |
++------------+--------------+-------------+-------------+
+
+Result table:
++------------+--------------+-------------+-------------+
+| username   | activity     | startDate   | endDate     |
++------------+--------------+-------------+-------------+
+| Alice      | Dancing      | 2020-02-21  | 2020-02-23  |
+| Bob        | Travel       | 2020-02-11  | 2020-02-18  |
++------------+--------------+-------------+-------------+
+
+The most recent activity of Alice is Travel from 2020-02-24 to 2020-02-28, before that she was dancing from 2020-02-21 to 2020-02-23.
+Bob only has one record, we just take that one.
+
+<<<<<<<<<<<<<<<<<<<<<<========== SQL Query ==============>>>>>>
+
+with cte as (select *, row_number() over(Partition by username order by endDate) as rn,
+count(*) over(Partition by username) as cnt
+ from UserActivity)
+ select username,activity, startDate,endDate from cte where rn=2 or cnt=1
+
+================= Explanation=========
+
+Approach
+
+This problem is based on ranking records by date, not counting how many times an activity was performed.
+
+Step 1: Rank each user's activities
+
+Use ROW_NUMBER() to assign a rank to every activity for each user based on endDate in descending order.
+
+ROW_NUMBER() OVER (
+    PARTITION BY username
+    ORDER BY endDate DESC
+) AS rn
+Step -2 :- Count the number of activities per user
+Use COUNT() as a window function to determine how many activities each user has.
+
+COUNT(*) OVER (
+    PARTITION BY username
+) AS cnt
+This helps identify users who have only one activity.
+Step 3: Filter the required rows
+
+Return:
+The row where rn = 2 (second most recent activity), or
+The row where cnt = 1 (user has only one activity).
+WHERE rn = 2
+   OR cnt = 1;
